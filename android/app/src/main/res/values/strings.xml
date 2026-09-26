@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Hanguk</string>
+    <string name="title_activity_main">Hanguk</string>
+    <string name="package_name">kr.ac.hanguk.app</string>
+    <string name="custom_url_scheme">kr.ac.hanguk.app</string>
+</resources>

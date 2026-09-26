@@ -46,6 +46,13 @@ export function HomePage({ settings }: PageProps) {
         }}
       />
 
+      <a href="#/rehearse" style="text-decoration:none;color:inherit">
+        <div class="card ok">
+          <b>🎓 Tập bài giảng / thuyết trình</b>
+          <div class="muted">Dán bài của bạn → Claude sửa lỗi → tập nói từng đoạn → nhận xét phát âm</div>
+        </div>
+      </a>
+
       <a href="#/vocab" style="text-decoration:none;color:inherit">
         <div class={`card ${due ? "ok" : ""}`}>
           <div class="row" style="justify-content:space-between">
@@ -77,7 +84,7 @@ export function HomePage({ settings }: PageProps) {
         })}
       </div>
       <p class="muted" style="margin-top:14px">
-        Nói có hai kiểu: <a href="#/shadow">Nhại câu</a> và <a href="#/roleplay">Đóng vai</a>.
+        Nói có ba kiểu: <a href="#/shadow">Nhại câu</a>, <a href="#/roleplay">Đóng vai</a> và <a href="#/rehearse">Tập bài giảng</a>.
       </p>
     </>
   );

@@ -1,12 +1,17 @@
 {
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
+    "@capacitor-community/speech-recognition": "^7.0.1",
+    "@capacitor-community/text-to-speech": "^8.0.2",
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
     "@preact/signals": "^2.11.2",
     "idb": "^8.0.3",
     "preact": "^10.29.8",
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
     "@preact/preset-vite": "^2.10.6",
     "typescript": "^7.0.2",
     "vite": "^8.3.1",
@@ -22,6 +27,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:android": "tsc --noEmit && CAPACITOR=1 vite build && cap sync android"
   }
 }

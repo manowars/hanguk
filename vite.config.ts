@@ -2,11 +2,15 @@ import { defineConfig } from "vitest/config";
 import preact from "@preact/preset-vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+// `npm run build:android` sets CAPACITOR=1: the app is served from the APK root, without a service worker.
+const android = process.env.CAPACITOR === "1";
+
 export default defineConfig({
-  base: "/hanguk/",
+  base: android ? "./" : "/hanguk/",
   plugins: [
     preact(),
     VitePWA({
+      disable: android,
       registerType: "autoUpdate",
       includeAssets: ["icon.svg"],
       manifest: {

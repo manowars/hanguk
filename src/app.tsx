@@ -9,9 +9,10 @@ import { ShadowPage } from "./modules/speak/ShadowPage";
 import { RoleplayPage } from "./modules/speak/RoleplayPage";
 import { ReadPage } from "./modules/read/ReadPage";
 import { WritePage } from "./modules/write/WritePage";
+import { RehearsePage } from "./modules/rehearse/RehearsePage";
 import { VocabPage } from "./modules/vocab/VocabPage";
 
-export type Route = "/" | "/listen" | "/shadow" | "/roleplay" | "/read" | "/write" | "/vocab" | "/settings";
+export type Route = "/" | "/listen" | "/shadow" | "/roleplay" | "/read" | "/write" | "/vocab" | "/rehearse" | "/settings";
 
 function readHash(): Route {
   const h = location.hash.replace(/^#/, "") || "/";
@@ -70,6 +71,9 @@ export function App() {
     case "/write":
       page = <WritePage {...props} />;
       break;
+    case "/rehearse":
+      page = <RehearsePage {...props} />;
+      break;
     case "/vocab":
       page = <VocabPage {...props} />;
       break;
@@ -80,7 +84,7 @@ export function App() {
       page = <HomePage {...props} />;
   }
 
-  const active = route === "/roleplay" ? "/shadow" : route;
+  const active = route === "/roleplay" || route === "/rehearse" ? "/shadow" : route;
   return (
     <>
       <main class="page">{page}</main>

@@ -4,6 +4,7 @@ import { systemPrompt, CONTEXT_LABEL } from "../src/api/prompts/common";
 import { listenPrompt, ListenLesson } from "../src/api/prompts/listen";
 import { readPrompt, ReadLesson } from "../src/api/prompts/read";
 import { shadowPrompt, roleplayStart, roleplayFeedbackPrompt, RoleplayTurn } from "../src/api/prompts/speak";
+import { rehearseScriptPrompt, rehearseReviewPrompt, RehearseScript, RehearseReview } from "../src/api/prompts/rehearse";
 import { writeTaskPrompt, writeReviewPrompt, WriteReview } from "../src/api/prompts/write";
 
 const s = { ...defaultSettings(), levels: { listen: 4, speak: 3, read: 5, write: 3 } };
@@ -83,4 +84,25 @@ test("write review prompt includes the user's text and the task", () => {
 
 test("WriteReview score must be 1..5", () => {
   expect(WriteReview.safeParse({ corrected: "", edits: [], score: 6, comment_vi: "" }).success).toBe(false);
+});
+
+test("rehearse script prompt embeds the draft and uses the speak level", () => {
+  const p = rehearseScriptPrompt(s, "presenting", "오늘 제 연구를 소개하겠습니다");
+  expect(p.system).toContain("TOPIK 3");
+  expect(p.user).toContain("<draft>\n오늘 제 연구를 소개하겠습니다\n</draft>");
+  expect(p.schema).toBe(RehearseScript);
+});
+
+test("rehearse review prompt lists every attempt with its match", () => {
+  const p = rehearseReviewPrompt(s, "teaching", [
+    { target: "안녕하십니까", said: "안녕하십니까", similarity: 1 },
+    { target: "시작하겠습니다", said: "", similarity: 0 },
+  ]);
+  expect(p.user).toContain("match: 100%");
+  expect(p.user).toContain("(skipped)");
+  expect(p.schema).toBe(RehearseReview);
+});
+
+test("RehearseScript needs at least two segments", () => {
+  expect(RehearseScript.safeParse({ title: "t", corrections: [], segments: [{ ko: "a", vi: "b", tip_vi: "c" }] }).success).toBe(false);
 });

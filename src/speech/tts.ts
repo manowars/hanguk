@@ -1,3 +1,8 @@
+import { Capacitor } from "@capacitor/core";
+import { TextToSpeech } from "@capacitor-community/text-to-speech";
+
+const NATIVE = Capacitor.isNativePlatform();
+
 const VOICE_WAIT_MS = 1000;
 
 function synth(): SpeechSynthesis | null {
@@ -28,20 +33,28 @@ async function koreanVoice(): Promise<SpeechSynthesisVoice | null> {
 }
 
 export function hasKoreanVoice(): boolean {
+  if (NATIVE) return true;
   const s = synth();
   return !!s && s.getVoices().some((v) => v.lang.toLowerCase().startsWith("ko"));
 }
 
 export function ttsSupported(): boolean {
+  if (NATIVE) return true;
   return synth() !== null;
 }
 
 export function stopSpeaking(): void {
+  if (NATIVE) void TextToSpeech.stop().catch(() => {});
   synth()?.cancel();
 }
 
 /** Speak Korean text. Resolves when finished or on error. */
 export async function speak(text: string, rate: number): Promise<void> {
+  if (NATIVE) {
+    // Android TTS engine (Google). Resolves when finished; errors (e.g. no Korean voice data) are ignored.
+    await TextToSpeech.speak({ text, lang: "ko-KR", rate, pitch: 1, volume: 1, category: "playback" }).catch(() => {});
+    return;
+  }
   const s = synth();
   if (!s) return;
   s.cancel();
