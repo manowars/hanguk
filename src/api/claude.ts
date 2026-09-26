@@ -24,19 +24,25 @@ export async function chat<T>({ system, messages, schema, settings }: ChatOption
   const run = () =>
     client.messages.parse({
       model: settings.model,
-      max_tokens: 4096,
+      max_tokens: 8192,
       system,
       messages,
       output_config: { format: zodOutputFormat(schema), effort: "medium" },
     });
-  try {
-    let res = await run();
-    if (res.parsed_output == null) res = await run();
-    if (res.parsed_output == null) throw new Error("Claude trả về sai định dạng. Thử lại.");
-    return res.parsed_output;
-  } catch (e) {
-    throw translate(e);
-  }
+  // A schema/JSON failure is thrown by the SDK as a plain AnthropicError (not an APIError).
+  // Retry that once; API errors (auth, rate limit, network) are translated and thrown at once.
+  const attempt = async (): Promise<T | null> => {
+    try {
+      return (await run()).parsed_output;
+    } catch (e) {
+      if (e instanceof Anthropic.APIError) throw translate(e);
+      return null;
+    }
+  };
+  let out = await attempt();
+  if (out == null) out = await attempt();
+  if (out == null) throw new Error("Claude trả về sai định dạng. Thử lại.");
+  return out;
 }
 
 function translate(e: unknown): Error {
